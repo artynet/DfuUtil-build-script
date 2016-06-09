@@ -68,10 +68,11 @@ make
 make install
 cd $WORK_DIR
 
+tag=`git rev-parse --short HEAD`
+
 # get dfu-util sources
 [ ! -d dfu-util-dsigma-git ] && git clone https://github.com/dsigma/dfu-util.git dfu-util-dsigma-git
 cd dfu-util-dsigma-git
-tag=`git rev-parse --short HEAD`
 ./autogen.sh
 PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --host=$MINGW_VERSION --prefix=$BUILD_DIR
 make
