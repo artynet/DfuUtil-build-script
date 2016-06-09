@@ -57,14 +57,14 @@ renameexe
 
 cd $WORK_DIR
 
-mv dfu-util-build-dsigma/ dfu-util-dsigma-$tag-osx/
+mv dfu-util-build-dsigma/ dfu-util/
 
-zip -r dfu-util-dsigma-$tag-osx.zip dfu-util-dsigma-$tag-osx/
+tar cvf dfu-util-dsigma-osx-$tag.tar.gz dfu-util/
 
 echo ""
 echo "Cleaning...."
 echo ""
 
-rm -rf dfu-util-dsigma-$tag-osx/
+rm -rf dfu-util/
 
 clean
