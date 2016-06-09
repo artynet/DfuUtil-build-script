@@ -2,6 +2,8 @@
 
 # DYLD_LIBRARY_PATH="$(dirname $0)/../lib" $0.bin "$@"
 
+sleep 1
+
 export DYLD_LIBRARY_PATH="`dirname "$0"`/../lib/"
 # Workaround for macosx gatekeeper, see https://github.com/arduino/Arduino/issues/3468
 chmod +x "`dirname "$0"`/dfu-util-bin"

@@ -26,6 +26,8 @@ done
 # Launch openocd but use the libs bundled inside the app
 # LD_LIBRARY_PATH="$MYAPP_HOME/lib" $0.bin "$@"
 
+sleep 1
+
 # fixes blank spaces path issue
 export LD_LIBRARY_PATH="`dirname "$0"`/../lib/"
 "`dirname "$0"`/dfu-util-bin" -l -d $2 -a $3 -s $4 -D $5
