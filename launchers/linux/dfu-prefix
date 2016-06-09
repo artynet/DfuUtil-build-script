@@ -28,4 +28,4 @@ done
 
 # fixes blank spaces path issue
 export LD_LIBRARY_PATH="`dirname "$0"`/../lib/"
-exec -a "$0" "`dirname "$0"`/dfu-prefix-bin" "$@"
+"`dirname "$0"`/dfu-prefix-bin" "$@"

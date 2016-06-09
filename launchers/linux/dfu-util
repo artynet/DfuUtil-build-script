@@ -28,4 +28,5 @@ done
 
 # fixes blank spaces path issue
 export LD_LIBRARY_PATH="`dirname "$0"`/../lib/"
-exec -a "$0" "`dirname "$0"`/dfu-util-bin" "$@"
+"`dirname "$0"`/dfu-util-bin" -l -d $2 -a $3 -s $4 -D $5
+"`dirname "$0"`/dfu-util-bin" -l -d $2 -a $3 --reset-stm32
