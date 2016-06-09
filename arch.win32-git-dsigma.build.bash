@@ -11,7 +11,7 @@
 
 clean() {
 
-    rm -rf libusb-1.0.19 dfu-util-0.8 dfu-util-0.8.tar.gz libusb-1.0.19.tar.bz2
+    rm -rf libusb-1.0.19 dfu-util libusb-1.0.19.tar.bz2
 
 }
 
@@ -45,16 +45,19 @@ tag=`git rev-parse --short HEAD`
 PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --host=$MINGW_VERSION --prefix=$BUILD_DIR
 make
 make install
+
 cd $WORK_DIR
 
-mv dfu-util-build-dsigma/ dfu-util-dsigma-$tag-win32/
+cp launchers/win/StAr_Write.bat $BUILD_DIR/bin
 
-zip -r dfu-util-dsigma-$tag-win32.zip dfu-util-dsigma-$tag-win32/
+mv dfu-util-build-dsigma/ dfu-util/
+
+tar cvf dfu-util-dsigma-win32-$tag.tar.gz dfu-util/
 
 echo ""
 echo "Cleaning...."
 echo ""
 
-rm -rf dfu-util-dsigma-$tag-win32/
+rm -rf dfu-util-dsigma-git/
 
 clean
