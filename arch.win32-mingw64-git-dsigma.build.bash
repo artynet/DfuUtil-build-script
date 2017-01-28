@@ -11,7 +11,7 @@
 
 clean() {
 
-    rm -rf libusb-1.0.20 dfu-util-dsigma-git libusb-1.0.20.tar.bz2
+    rm -rf libusb-1.0.21 dfu-util-dsigma-git libusb-1.0.21.tar.bz2
 
 }
 
@@ -59,10 +59,10 @@ MINGW_VERSION=i686-w64-mingw32
 # cd $BUILD_DIR
 
 # get libusb sources
-[ -d libusb-1.0.20 ] || { wget -O libusb-1.0.20.tar.bz2 http://sourceforge.net/projects/libusb/files/libusb-1.0/libusb-1.0.20/libusb-1.0.20.tar.bz2/download && tar jxvf libusb-1.0.20.tar.bz2 ;}
-cd libusb-1.0.20
-PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --host=$MINGW_VERSION --prefix=$BUILD_DIR
-# WINVER workaround needed for 1.0.20 only
+[ -d libusb-2.0.21 ] || { wget -O libusb-1.0.21.tar.bz2 http://sourceforge.net/projects/libusb/files/libusb-1.0/libusb-1.0.21/libusb-1.0.21.tar.bz2/download && tar jxvf libusb-1.0.21.tar.bz2 ;}
+cd libusb-1.0.21
+PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --host=$MINGW_VERSION --prefix=$BUILD_DIR --enable-static --disable-shared
+# WINVER workaround needed for 1.0.19 only
 # make CFLAGS="-DWINVER=0x0501"
 make
 make install
@@ -71,11 +71,13 @@ cd $WORK_DIR
 tag=`git rev-parse --short HEAD`
 
 # get dfu-util sources
-[ ! -d dfu-util-dsigma-git ] && git clone https://github.com/dsigma/dfu-util.git dfu-util-dsigma-git
+[ ! -d dfu-util-dsigma-git ] && git clone https://github.com/artynet/dfu-util-official.git dfu-util-dsigma-git
 cd dfu-util-dsigma-git
 ./autogen.sh
-PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --host=$MINGW_VERSION --prefix=$BUILD_DIR
-make
+PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --host=$MINGW_VERSION --prefix=$BUILD_DIR \
+            USB_CFLAGS="-I$BUILD_DIR/include/libusb-1.0" \
+            USB_LIBS="-L$BUILD_DIR/lib -lusb-1.0" PKG_CONFIG=true
+make LDFLAGS=-static
 make install
 cd $WORK_DIR
 
