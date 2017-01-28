@@ -7,7 +7,7 @@ export LDFLAGS="-arch x86_64 -arch i386"
 
 clean() {
 
-    rm -rf libusb-1.0.20/ dfu-util-0.8/ dfu-util-0.8.tar.gz dfu-util-dsigma-git/
+    rm -rf libusb-1.0.21/ dfu-util-0.8/ dfu-util-0.8.tar.gz dfu-util-dsigma-git/
 
 }
 
@@ -33,14 +33,14 @@ BUILD_DIR=$PWD/dfu-util-build-dsigma
 # cd $BUILD_DIR
 
 # get libusb sources
-if [ ! -f libusb-1.0.20.tar.bz2 ]
+if [ ! -f libusb-1.0.21.tar.bz2 ]
 then
-    wget -O libusb-1.0.20.tar.bz2 http://sourceforge.net/projects/libusb/files/libusb-1.0/libusb-1.0.20/libusb-1.0.20.tar.bz2/download
+    wget -O libusb-1.0.21.tar.bz2 http://sourceforge.net/projects/libusb/files/libusb-1.0/libusb-1.0.21/libusb-1.0.21.tar.bz2/download
 fi
 
-tar jxvf libusb-1.0.20.tar.bz2
+tar jxvf libusb-1.0.21.tar.bz2
 
-cd libusb-1.0.20
+cd libusb-1.0.21
 PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --prefix=$BUILD_DIR --enable-static --disable-shared
 # WINVER workaround needed for 1.0.19 only
 # make CFLAGS="-DWINVER=0x0501"
@@ -51,12 +51,12 @@ cd $WORK_DIR
 tag=`git rev-parse --short HEAD`
 
 # get dfu-util sources
-[ ! -d dfu-util-dsigma-git ] && git clone https://github.com/dsigma/dfu-util.git dfu-util-dsigma-git
+[ ! -d dfu-util-dsigma-git ] && git clone https://github.com/artynet/dfu-util-official.git dfu-util-dsigma-git
 cd dfu-util-dsigma-git
 ./autogen.sh
 PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --prefix=$BUILD_DIR \
             USB_CFLAGS="-I$BUILD_DIR/include/libusb-1.0  -framework IOKit -framework CoreFoundation" \
-            USB_LIBS="-L $BUILD_DIR/lib -lusb-1.0" PKG_CONFIG=true
+            USB_LIBS="-L$BUILD_DIR/lib -lusb-1.0" PKG_CONFIG=true
 make
 make install
 
