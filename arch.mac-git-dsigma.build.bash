@@ -4,7 +4,6 @@ export CFLAGS="-arch x86_64 -arch i386 -mmacosx-version-min=10.5"
 export CXXFLAGS="-arch x86_64 -arch i386 -mmacosx-version-min=10.5"
 export LDFLAGS="-arch x86_64 -arch i386"
 
-
 clean() {
 
     rm -rf libusb-1.0.21/ dfu-util-0.8/ dfu-util-0.8.tar.gz dfu-util-dsigma-git/
@@ -28,8 +27,12 @@ set -e
 #ARCH=`uname -s`
 WORK_DIR=$PWD
 BUILD_DIR=$PWD/dfu-util-build-dsigma
+USBBUILD=$PWD/libusb-build
+DFUBUILD=$PWD/dfu-util-build
 
-[ -d $BUILD_DIR ] || mkdir -p $BUILD_DIR
+mkdir -p $BUILD_DIR
+mkdir -p $USBBUILD
+mkdir -p $DFUBUILD
 # cd $BUILD_DIR
 
 # get libusb sources
@@ -40,8 +43,8 @@ fi
 
 tar jxvf libusb-1.0.21.tar.bz2
 
-cd libusb-1.0.21
-PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --prefix=$BUILD_DIR --enable-static --disable-shared
+cd $USBBUILD
+PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ../libusb-1.0.21/configure --prefix=$BUILD_DIR --enable-static --disable-shared
 # WINVER workaround needed for 1.0.19 only
 # make CFLAGS="-DWINVER=0x0501"
 make
@@ -54,7 +57,8 @@ tag=`git rev-parse --short HEAD`
 [ ! -d dfu-util-dsigma-git ] && git clone https://github.com/artynet/dfu-util-official.git dfu-util-dsigma-git
 cd dfu-util-dsigma-git
 ./autogen.sh
-PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --prefix=$BUILD_DIR \
+cd $DFUBUILD
+PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ../dfu-util-dsigma-git/configure --prefix=$BUILD_DIR \
             USB_CFLAGS="-I$BUILD_DIR/include/libusb-1.0  -framework IOKit -framework CoreFoundation" \
             USB_LIBS="-L$BUILD_DIR/lib -lusb-1.0" PKG_CONFIG=true
 make
