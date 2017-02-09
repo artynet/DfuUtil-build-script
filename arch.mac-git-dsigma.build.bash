@@ -27,18 +27,23 @@ set -e
 #ARCH=`uname -s`
 WORK_DIR=$PWD
 BUILD_DIR=$PWD/dfu-util-build-dsigma
+DFUBUILD=$PWD/dfu-util-build
+USBBUILD=$PWD/libusb-build
 
-[ -d $BUILD_DIR ] || mkdir -p $BUILD_DIR
+mkdir -p $BUILD_DIR
+mkdir -p $DFUBUILD
+mkdir -p $USBBUILD
 # cd $BUILD_DIR
 
 # get libusb sources
 [ -d libusb-1.0.20 ] || { wget -O libusb-1.0.20.tar.bz2 http://sourceforge.net/projects/libusb/files/libusb-1.0/libusb-1.0.20/libusb-1.0.20.tar.bz2/download && tar jxvf libusb-1.0.20.tar.bz2 ;}
-cd libusb-1.0.20
-PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --prefix=$BUILD_DIR
+cd $USBBUILD
+PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ../libusb-1.0.20/configure --prefix=$BUILD_DIR
 # WINVER workaround needed for 1.0.19 only
 # make CFLAGS="-DWINVER=0x0501"
 make
 make install
+
 cd $WORK_DIR
 
 tag=`git rev-parse --short HEAD`
@@ -47,7 +52,8 @@ tag=`git rev-parse --short HEAD`
 [ ! -d dfu-util-dsigma-git ] && git clone https://github.com/dsigma/dfu-util.git dfu-util-dsigma-git
 cd dfu-util-dsigma-git
 ./autogen.sh
-PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ./configure --prefix=$BUILD_DIR USB_CFLAGS="-I$BUILD_DIR/include/libusb-1.0" \
+cd $DFUBUILD
+PKG_CONFIG_PATH=$BUILD_DIR/lib/pkgconfig ../dfu-util-dsigma-git/configure --prefix=$BUILD_DIR USB_CFLAGS="-I$BUILD_DIR/include/libusb-1.0" \
             USB_LIBS="-L $BUILD_DIR/lib -lusb-1.0" PKG_CONFIG=true
 make
 make install
@@ -66,6 +72,6 @@ echo ""
 echo "Cleaning...."
 echo ""
 
-rm -rf dfu-util/
+rm -rf dfu-util/ *-build/
 
 clean
